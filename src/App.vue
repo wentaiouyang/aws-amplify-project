@@ -1,13 +1,19 @@
 <template>
   <div id="app">
-    <h1>Todo App</h1>
-    <input type="text" v-model="name" placeholder="Todo name" />
-    <input type="text" v-model="description" placeholder="Todo description" />
-    <button v-on:click="createTodo">Create Todo</button>
-    <div v-for="item in todos" :key="item.id">
-      <h3>{{ item.name }}</h3>
-      <p>{{ item.description }}</p>
-    </div>
+    <Authenticator>
+      <template v-slot="{ user, signOut }">
+        <h1>Hello {{ user.username }}!</h1>
+        <h1>Todo App</h1>
+        <input type="text" v-model="name" placeholder="Todo name" />
+        <input type="text" v-model="description" placeholder="Todo description" />
+        <button v-on:click="createTodo">Create Todo</button>
+        <div v-for="item in todos" :key="item.id">
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+        <button @click="signOut">Sign Out</button>
+      </template>
+    </Authenticator>
   </div>
 </template>
 
@@ -16,6 +22,8 @@ import { API } from 'aws-amplify'
 import { createTodo } from './graphql/mutations'
 import { listTodos } from './graphql/queries'
 import { onCreateTodo } from './graphql/subscriptions'
+import { Authenticator } from '@aws-amplify/ui-vue'
+import '@aws-amplify/ui-vue/styles.css'
 
 export default {
   name: 'App',
@@ -23,6 +31,7 @@ export default {
     this.getTodos()
     this.subscribe()
   },
+  components: { Authenticator },
   data() {
     return {
       name: '',
